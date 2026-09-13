@@ -23,9 +23,6 @@ const CATEGORIES = {
   "مغزها": "🌰 مغزها و دانه‌ها"
 };
 
-// ==========================================
-// ترجمه اسم دسته به انگلیسی
-// ==========================================
 const CAT_EN = {
   "گوارش": "Digestion",
   "قلب": "Heart",
@@ -46,7 +43,7 @@ const CAT_EN = {
 };
 
 // ==========================================
-// دیتابیس کامل (۲۳۰+ مورد)
+// دیتابیس گیاهان
 // ==========================================
 const HERBS = {
   // ============ گوارش ============
@@ -70,7 +67,6 @@ const HERBS = {
   "مرزنجوش": { en: "Marjoram", cat: "گوارش", props: "بهبود گوارش، آرام‌بخش، ضد نفخ" },
   "زنجبیل ترش": { en: "Galangal", cat: "گوارش", props: "بهبود گوارش، ضد تهوع، ضد التهاب" },
   "قرنفل": { en: "Clove", cat: "گوارش", props: "ضد نفخ، بهبود گوارش، ضد درد دندان" },
-  "دارچین چینی": { en: "Cassia", cat: "گوارش", props: "بهبود گوارش، گرم‌کننده، ضد نفخ" },
   "رازیانه رومی": { en: "Sweet Fennel", cat: "گوارش", props: "بهبود گوارش، ضد نفخ، آرام‌بخش" },
   "خرفه": { en: "Purslane", cat: "گوارش", props: "کاهش قند خون، سلامت قلب، ضد التهاب" },
   "کاسنی": { en: "Chicory", cat: "گوارش", props: "بهبود گوارش، سلامت کبد، تقویت ایمنی" },
@@ -139,8 +135,6 @@ const HERBS = {
   // ============ مفاصل ============
   "پنجه گربه": { en: "Cat's Claw", cat: "مفاصل", props: "ضد التهاب مفاصل، تقویت ایمنی" },
   "بید": { en: "Willow", cat: "مفاصل", props: "ضد درد، ضد التهاب، کاهش تب" },
-  "زردچوبه کوهی": { en: "Wild Turmeric", cat: "مفاصل", props: "ضد التهاب مفاصل، آنتی‌اکسیدان" },
-  "گزنه کوهی": { en: "Wild Nettle", cat: "مفاصل", props: "ضد التهاب مفاصل، سلامت استخوان" },
   "آووکادو سویا": { en: "Avocado Soybean", cat: "مفاصل", props: "ضد التهاب مفاصل، سلامت غضروف" },
   "کندر": { en: "Frankincense", cat: "مفاصل", props: "ضد التهاب مفاصل، بهبود آرتریت" },
   "مریمی": { en: "Boswellia", cat: "مفاصل", props: "ضد التهاب مفاصل، سلامت غضروف" },
@@ -152,7 +146,6 @@ const HERBS = {
   "شیرین بیان کوهی": { en: "Wild Licorice", cat: "ایمنی", props: "تقویت ایمنی، ضد ویروس" },
   "پروپولیس": { en: "Propolis", cat: "ایمنی", props: "تقویت ایمنی، ضد باکتری، ضد ویروس" },
   "ژل رویال": { en: "Royal Jelly", cat: "ایمنی", props: "تقویت ایمنی، افزایش انرژی، سلامت پوست" },
-  "آب‌زیست": { en: "Astragalus", cat: "ایمنی", props: "تقویت ایمنی، افزایش انرژی، ضد پیری" },
   "ریشی": { en: "Reishi", cat: "ایمنی", props: "تقویت ایمنی، سلامت کبد، ضد سرطان" },
   "شیتاکه": { en: "Shiitake", cat: "ایمنی", props: "تقویت ایمنی، کاهش کلسترول، ضد سرطان" },
   "مای‌تاکه": { en: "Maitake", cat: "ایمنی", props: "تقویت ایمنی، کاهش قند خون" },
@@ -164,8 +157,6 @@ const HERBS = {
   "زرشک": { en: "Barberry", cat: "کبد", props: "سلامت کبد، کاهش قند خون، بهبود گوارش" },
   "شاه‌پسند": { en: "Vitex", cat: "کبد", props: "سلامت کبد، تعادل هورمونی، سلامت بانوان" },
   "کنگر وحشی": { en: "Wild Artichoke", cat: "کبد", props: "سلامت کبد، کاهش کلسترول، سم‌زدایی" },
-  "زردچوبه هندی": { en: "Indian Turmeric", cat: "کبد", props: "سلامت کبد، ضد التهاب قوی" },
-  "خرفه کوهی": { en: "Wild Purslane", cat: "کبد", props: "سلامت کبد، کاهش قند خون" },
   "چای کوهی": { en: "Mountain Tea", cat: "کبد", props: "سلامت کبد، آرام‌بخش، تقویت ایمنی" },
 
   // ============ کلیه ============
@@ -183,12 +174,8 @@ const HERBS = {
   "اسطوخودوس زنانه": { en: "Lavender Female", cat: "زنان", props: "کاهش درد قاعدگی، آرام‌بخش" },
 
   // ============ دیابت ============
-  "خرفه دیابتی": { en: "Purslane Diabetic", cat: "دیابت", props: "کاهش قند خون، سلامت قلب" },
-  "برگ گردو": { en: "Walnut Leaf", cat: "دیابت", props: "کاهش قند خون، سلامت کبد" },
-  "گیمنما": { en: "Gymnema", cat: "دیابت", props: "کاهش قند خون، کاهش اشتها" },
   "شنبلیله دیابتی": { en: "Fenugreek Diabetic", cat: "دیابت", props: "کاهش قند خون، بهبود حساسیت انسولین" },
   "دارچین دیابتی": { en: "Cinnamon Diabetic", cat: "دیابت", props: "کاهش قند خون، بهبود حساسیت انسولین" },
-  "خورنال": { en: "Bitter Melon", cat: "دیابت", props: "کاهش قند خون، بهبود دیابت" },
   "سیر دیابتی": { en: "Garlic Diabetic", cat: "دیابت", props: "کاهش قند خون، کاهش کلسترول" },
   "پیاز دیابتی": { en: "Onion Diabetic", cat: "دیابت", props: "کاهش قند خون، سلامت قلب" },
 
@@ -236,13 +223,10 @@ const HERBS = {
   "انگور فرنگی": { en: "Gooseberry", cat: "میوه", props: "آنتی‌اکسیدان، سلامت قلب، تقویت ایمنی" },
   "کیوی طلایی": { en: "Golden Kiwi", cat: "میوه", props: "تقویت ایمنی، سلامت پوست، بهبود خواب" },
   "پاپایا": { en: "Papaya", cat: "میوه", props: "بهبود گوارش، تقویت ایمنی، سلامت پوست" },
-  "مانگو": { en: "Mango Fruit", cat: "میوه", props: "تقویت ایمنی، سلامت پوست، سلامت چشم" },
   "آووکادو": { en: "Avocado", cat: "میوه", props: "سلامت قلب، کاهش کلسترول، سلامت پوست" },
   "لیمو ترش": { en: "Lime", cat: "میوه", props: "تقویت ایمنی، کمک به هضم، سلامت پوست" },
   "پومِلو": { en: "Pomelo", cat: "میوه", props: "تقویت ایمنی، کاهش وزن، سلامت قلب" },
   "نارنگی": { en: "Tangerine", cat: "میوه", props: "تقویت ایمنی، سلامت پوست، بهبود گوارش" },
-  "دارابی": { en: "Pomelo Red", cat: "میوه", props: "تقویت ایمنی، سلامت قلب، کاهش وزن" },
-  "انبه هندی": { en: "Indian Mango", cat: "میوه", props: "تقویت ایمنی، سلامت پوست، سلامت چشم" },
   "آناناس تازه": { en: "Fresh Pineapple", cat: "میوه", props: "ضد التهاب، بهبود گوارش، تقویت ایمنی" },
   "انجیر خشک": { en: "Dried Fig", cat: "میوه", props: "بهبود گوارش، تقویت استخوان، انرژی‌بخش" },
 
@@ -280,36 +264,19 @@ const HERBS = {
   "گشنیز تازه": { en: "Fresh Coriander", cat: "سبزیجات", props: "سم‌زدایی، بهبود گوارش، تقویت ایمنی" },
   "شوید تازه": { en: "Fresh Dill", cat: "سبزیجات", props: "بهبود گوارش، ضد نفخ، آرام‌بخش" },
   "نعنا تازه": { en: "Fresh Mint", cat: "سبزیجات", props: "بهبود هضم، رفع نفخ، آرام‌بخش" },
-  "ریحان بنفش": { en: "Purple Basil", cat: "سبزیجات", props: "آنتی‌اکسیدان، ضد التهاب، تقویت ایمنی" },
   "کلم بروکسل": { en: "Brussels Sprout", cat: "سبزیجات", props: "ضد سرطان، تقویت ایمنی، سلامت استخوان" },
   "کلم قرمز": { en: "Red Cabbage", cat: "سبزیجات", props: "ضد سرطان، سلامت قلب، تقویت ایمنی" },
   "کاهوی رومی": { en: "Romaine Lettuce", cat: "سبزیجات", props: "آبرسانی، سلامت چشم، آرام‌بخش" },
-  "اسفناج تازه": { en: "Fresh Spinach", cat: "سبزیجات", props: "سلامت چشم، تقویت استخوان، کم‌خونی" },
-  "کرفس کوهی": { en: "Wild Celery", cat: "سبزیجات", props: "کاهش فشار خون، سم‌زدایی، سلامت کلیه" },
   "ریشه کاسنی": { en: "Chicory Root", cat: "سبزیجات", props: "سلامت کبد، بهبود گوارش، تقویت ایمنی" },
   "ریشه جعفری": { en: "Parsley Root", cat: "سبزیجات", props: "سلامت کلیه، سم‌زدایی، تقویت ایمنی" },
 
   // ============ ادویه‌جات ============
   "فلفل سیاه": { en: "Black Pepper", cat: "ادویه", props: "بهبود گوارش، ضد التهاب، تقویت ایمنی" },
   "فلفل قرمز": { en: "Red Pepper", cat: "ادویه", props: "افزایش متابولیسم، ضد درد، سلامت قلب" },
-  "زردچوبه ادویه": { en: "Turmeric Spice", cat: "ادویه", props: "ضد التهاب قوی، آنتی‌اکسیدان" },
-  "دارچین ادویه": { en: "Cinnamon Spice", cat: "ادویه", props: "کاهش قند خون، ضد التهاب" },
-  "زنجبیل ادویه": { en: "Ginger Spice", cat: "ادویه", props: "ضد تهوع، ضد التهاب، بهبود هضم" },
-  "زعفران ادویه": { en: "Saffron Spice", cat: "ادویه", props: "ضد افسردگی، سلامت قلب" },
-  "هل ادویه": { en: "Cardamom Spice", cat: "ادویه", props: "بهبود گوارش، ضد نفخ" },
-  "زیره ادویه": { en: "Cumin Spice", cat: "ادویه", props: "بهبود گوارش، ضد نفخ" },
-  "رازیانه ادویه": { en: "Fennel Spice", cat: "ادویه", props: "بهبود گوارش، ضد نفخ" },
-  "قرنفل ادویه": { en: "Clove Spice", cat: "ادویه", props: "ضد درد دندان، ضد نفخ" },
   "جوز هندی": { en: "Nutmeg", cat: "ادویه", props: "آرام‌بخش، بهبود گوارش، تقویت ایمنی" },
   "میخک": { en: "Clove Whole", cat: "ادویه", props: "ضد درد، ضد باکتری، بهبود گوارش" },
   "سماق": { en: "Sumac", cat: "ادویه", props: "آنتی‌اکسیدان، بهبود گوارش، کاهش قند خون" },
-  "آویشن ادویه": { en: "Thyme Spice", cat: "ادویه", props: "ضد باکتری، تقویت ایمنی" },
-  "پونه ادویه": { en: "Oregano Spice", cat: "ادویه", props: "ضد باکتری، ضد ویروس" },
-  "رزماری ادویه": { en: "Rosemary Spice", cat: "ادویه", props: "تقویت حافظه، آنتی‌اکسیدان" },
-  "مریم گلی ادویه": { en: "Sage Spice", cat: "ادویه", props: "آرام‌بخش، بهبود گوارش" },
   "ریحان خشک": { en: "Dried Basil", cat: "ادویه", props: "ضد التهاب، بهبود گوارش" },
-  "شنبلیله ادویه": { en: "Fenugreek Spice", cat: "ادویه", props: "کاهش قند خون، افزایش شیر مادران" },
-  "کنجد ادویه": { en: "Sesame Spice", cat: "ادویه", props: "سلامت استخوان، تقویت مو" },
 
   // ============ مغزها و دانه‌ها ============
   "بادام": { en: "Almond", cat: "مغزها", props: "سلامت قلب، تقویت استخوان، کاهش کلسترول" },
@@ -325,12 +292,11 @@ const HERBS = {
   "تخم چیا": { en: "Chia Seed", cat: "مغزها", props: "سلامت قلب، بهبود گوارش، تقویت استخوان" },
   "تخم شربتی": { en: "Basil Seed", cat: "مغزها", props: "آبرسانی، بهبود گوارش، سلامت قلب" },
   "تخم خرفه": { en: "Purslane Seed", cat: "مغزها", props: "سلامت قلب، کاهش قند خون، تقویت ایمنی" },
-  "تخم گشنیز مغز": { en: "Coriander Seed", cat: "مغزها", props: "بهبود گوارش، ضد التهاب، تقویت ایمنی" },
   "تخم رازیانه": { en: "Fennel Seed", cat: "مغزها", props: "بهبود گوارش، ضد نفخ، تقویت ایمنی" }
 };
 
 // ==========================================
-// دیتابیس بیماری → گیاه
+// بیماری → گیاه
 // ==========================================
 const DISEASES = {
   "یبوست": ["بارهنگ", "سنا", "خاکشیر", "انجیر", "آلو"],
@@ -346,8 +312,8 @@ const DISEASES = {
   "فشار خون بالا": ["سیر", "چغندر", "کرفس", "زالزالک", "هندوانه"],
   "کلسترول بالا": ["سیر", "شنبلیله", "کنگر فرنگی", "زیتون", "کنجد"],
   "ضعف قلب": ["زالزالک", "زعفران", "سیر", "زیتون"],
-  "قند خون بالا": ["دارچین", "شنبلیله", "خرفه", "برگ گردو", "گیمنما", "بامیه"],
-  "دیابت": ["دارچین", "شنبلیله", "خرفه", "گیمنما", "بامیه", "خورنال"],
+  "قند خون بالا": ["دارچین", "شنبلیله", "بامیه", "سیر", "چای سبز"],
+  "دیابت": ["دارچین", "شنبلیله", "بامیه", "سیر", "پیاز", "چای سبز"],
   "بی‌خوابی": ["بابونه", "اسطوخودوس", "سنبل الطیب", "بادرنجبویه", "گیلاس"],
   "اضطراب": ["بابونه", "اسطوخودوس", "سنبل الطیب", "گل گاوزبان", "بادرنجبویه"],
   "افسردگی": ["زعفران", "گل راعی", "اسطوخودوس", "جینسینگ"],
@@ -378,7 +344,6 @@ const DISEASES = {
   "درد قاعدگی": ["بابونه", "اسطوخودوس", "زنجبیل", "رازیانه"],
   "پروستات": ["گزنه", "کدو تنبل", "انار", "گوجه", "زردچوبه"],
   "ضعف بینایی": ["بلوبری", "هویج", "اسفناج", "زعفران"],
-  "آب مروارید": ["بلوبری", "زعفران", "چای سبز"],
   "چاقی": ["چای سبز", "زنجبیل", "دارچین", "گریپ‌فروت", "لیمو"],
   "خستگی": ["جینسینگ", "چای سبز", "زنجبیل", "موز", "خرما"],
   "بواسیر": ["بارهنگ", "گل ختمی", "خاکشیر", "انجیر"],
@@ -386,7 +351,6 @@ const DISEASES = {
   "عفونت قارچی": ["سیر", "پونه", "آویشن", "همیشه بهار"],
   "زخم دهان": ["شیرین بیان", "بابونه", "مریم گلی", "آلوئه ورا"],
   "بوی بد دهان": ["نعنا", "جعفری", "مریم گلی", "میخک"],
-  "پوسیدگی دندان": ["مریم گلی", "میخک", "نعنا"],
   "درد دندان": ["میخک", "قرنفل", "نعنا", "بابونه"],
   "پف چشم": ["چای سبز", "خیار", "گل محمدی", "بابونه"],
   "سیاهی دور چشم": ["خیار", "گل محمدی", "چای سبز", "آلوئه ورا"]
@@ -421,6 +385,48 @@ const MAIN_MENU = {
   ],
   resize_keyboard: true
 };
+
+// ==========================================
+// نرمال‌سازی متن فارسی
+// ==========================================
+function normalize(text) {
+  if (!text) return "";
+  return text
+    .replace(/[يﻯﻰ]/g, "ی")
+    .replace(/[ك]/g, "ک")
+    .replace(/[\u200c\u200f\u200e]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// ==========================================
+// جستجوی هوشمند
+// ==========================================
+function smartSearch(text) {
+  const q = normalize(text);
+
+  // ۱. مطابقت دقیق اسم
+  let exact = Object.keys(HERBS).find(k => normalize(k) === q);
+  if (exact) return { type: "single", key: exact };
+
+  // ۲. شروع با text
+  const startsWith = Object.keys(HERBS).filter(k => normalize(k).startsWith(q));
+  if (startsWith.length === 1) return { type: "single", key: startsWith[0] };
+  if (startsWith.length > 1) return { type: "multi", keys: startsWith };
+
+  // ۳. text داخل اسم
+  const containsName = Object.keys(HERBS).filter(k => normalize(k).includes(q));
+  if (containsName.length === 1) return { type: "single", key: containsName[0] };
+  if (containsName.length > 1) return { type: "multi", keys: containsName };
+
+  // ۴. جستجو در خواص
+  const inProps = Object.keys(HERBS).filter(k =>
+    normalize(HERBS[k].props).includes(q)
+  );
+  if (inProps.length > 0) return { type: "props", keys: inProps, query: text };
+
+  return { type: "none" };
+}
 
 // ==========================================
 // جستجو در USDA
@@ -471,27 +477,6 @@ function formatNutrients(food) {
 }
 
 // ==========================================
-// جستجوی هوشمند گیاه/میوه
-// ==========================================
-function smartSearch(text) {
-  // ۱. مطابقت دقیق
-  let exact = Object.keys(HERBS).find(k => k === text);
-  if (exact) return { type: "single", key: exact };
-
-  // ۲. شروع با text
-  const startsWith = Object.keys(HERBS).filter(k => k.startsWith(text));
-  if (startsWith.length === 1) return { type: "single", key: startsWith[0] };
-  if (startsWith.length > 1) return { type: "multi", keys: startsWith };
-
-  // ۳. text داخل اسم
-  const contains = Object.keys(HERBS).filter(k => k.includes(text));
-  if (contains.length === 1) return { type: "single", key: contains[0] };
-  if (contains.length > 1) return { type: "multi", keys: contains };
-
-  return { type: "none" };
-}
-
-// ==========================================
 // Webhook اصلی
 // ==========================================
 module.exports = async (req, res) => {
@@ -513,7 +498,7 @@ module.exports = async (req, res) => {
         `می‌تونی:\n` +
         `• اسم گیاه یا میوه بنویسی\n` +
         `• از دسته‌بندی‌ها استفاده کنی\n` +
-        `• اسم بیماری رو بزنی`,
+        `• اسم بیماری یا خاصیت رو بزنی`,
         MAIN_MENU
       );
       return res.status(200).send("OK");
@@ -522,11 +507,12 @@ module.exports = async (req, res) => {
     if (text === "❓ راهنما" || text === "/help") {
       await sendMessage(chatId,
         `📖 راهنما:\n\n` +
-        `🌿🍎 جستجوی گیاه و میوه — اسم گیاه یا میوه\n` +
+        `🌿🍎 جستجوی گیاه و میوه — اسم گیاه، میوه یا خاصیت\n` +
         `📂 دسته‌بندی‌ها — گیاهان بر اساس حوزه\n` +
         `🩺 جستجوی بیماری — گیاهان مفید\n\n` +
         `💡 مثال:\n` +
         `• «زنجبیل»، «سیب»\n` +
+        `• «آرام بخش»، «ضد التهاب»\n` +
         `• «گوارش»، «میوه»\n` +
         `• «یبوست»، «بی‌خوابی»\n\n` +
         `⚠️ محتوای آموزشی — جایگزین پزشک نیست.`,
@@ -544,8 +530,8 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    if (text === "🌿🍎 جستجوی گیاه و میوه" || text === "🌿 جستجوی گیاه/میوه" || text === "🍎 جستجوی گیاه/میوه") {
-      await sendMessage(chatId, "🌿🍎 اسم گیاه یا میوه رو بنویس:", MAIN_MENU);
+    if (text === "🌿🍎 جستجوی گیاه و میوه") {
+      await sendMessage(chatId, "🌿🍎 اسم گیاه، میوه یا خاصیت رو بنویس:", MAIN_MENU);
       return res.status(200).send("OK");
     }
 
@@ -560,7 +546,7 @@ module.exports = async (req, res) => {
 
     // بیماری
     const diseaseKey = Object.keys(DISEASES).find(d =>
-      text === d || text.includes(d) || d.includes(text)
+      normalize(text) === normalize(d) || normalize(text).includes(normalize(d)) || normalize(d).includes(normalize(text))
     );
     if (diseaseKey) {
       const herbs = DISEASES[diseaseKey];
@@ -577,7 +563,7 @@ module.exports = async (req, res) => {
 
     // دسته
     const catMatch = Object.keys(CATEGORIES).find(c =>
-      text === c || text.includes(c) || c.includes(text)
+      normalize(text) === normalize(c) || normalize(text).includes(normalize(c)) || normalize(c).includes(normalize(text))
     );
     if (catMatch) {
       const herbs = Object.entries(HERBS).filter(([k, v]) => v.cat === catMatch);
@@ -589,7 +575,7 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // گیاه/میوه (جستجوی هوشمند)
+    // جستجوی هوشمند
     const result = smartSearch(text);
 
     if (result.type === "multi") {
@@ -599,6 +585,19 @@ module.exports = async (req, res) => {
       });
       optText += `\n💡 اسم دقیق‌تر رو بنویس.`;
       await sendMessage(chatId, optText, MAIN_MENU);
+      return res.status(200).send("OK");
+    }
+
+    if (result.type === "props") {
+      let pText = `🍃 گیاهان با خاصیت «${result.query}»:\n\n`;
+      result.keys.slice(0, 20).forEach((m) => {
+        pText += `🌿 ${m} (${HERBS[m].en})\n   ${HERBS[m].props}\n\n`;
+      });
+      if (result.keys.length > 20) {
+        pText += `💡 و ${result.keys.length - 20} مورد دیگه...\n\n`;
+      }
+      pText += `⚠️ محتوای آموزشی — جایگزین پزشک نیست.`;
+      await sendMessage(chatId, pText, MAIN_MENU);
       return res.status(200).send("OK");
     }
 

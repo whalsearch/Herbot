@@ -345,12 +345,17 @@ const NUTRIENTS = {
   "Vitamin C, total ascorbic acid": "ویتامین C", "Vitamin A, RAE": "ویتامین A"
 };
 
+// ==========================================
+// منوی اصلی جدید
+// ==========================================
 const MAIN_MENU = {
   keyboard: [
+    [{ text: "📖 معرفی ابن‌سینا و قانون" }],
+    [{ text: "📚 خلاصه رایگان قانون" }],
+    [{ text: "📖 فروش کتاب قانون" }],
     [{ text: "🌿🍎 جستجوی گیاه و میوه" }],
     [{ text: "📂 دسته‌بندی‌ها" }, { text: "🩺 جستجوی بیماری" }],
     [{ text: "🧠 مزاج خودت را بشناس" }],
-    [{ text: "📖 فروش کتاب قانون" }],
     [{ text: "📞 پشتیبانی" }, { text: "❓ راهنما" }]
   ],
   resize_keyboard: true
@@ -366,18 +371,48 @@ function normalize(text) {
     .trim();
 }
 
+// ==========================================
+// جستجوی هوشمند (با کلمات کلیدی)
+// ==========================================
 function smartSearch(text) {
   const q = normalize(text);
+  if (!q) return { type: "none" };
+
+  // ۱. مطابقت دقیق اسم
   let exact = Object.keys(HERBS).find(k => normalize(k) === q);
   if (exact) return { type: "single", key: exact };
+
+  // ۲. شروع با اسم
   const startsWith = Object.keys(HERBS).filter(k => normalize(k).startsWith(q));
   if (startsWith.length === 1) return { type: "single", key: startsWith[0] };
   if (startsWith.length > 1) return { type: "multi", keys: startsWith };
+
+  // ۳. داخل اسم
   const containsName = Object.keys(HERBS).filter(k => normalize(k).includes(q));
   if (containsName.length === 1) return { type: "single", key: containsName[0] };
   if (containsName.length > 1) return { type: "multi", keys: containsName };
-  const inProps = Object.keys(HERBS).filter(k => normalize(HERBS[k].props).includes(q));
-  if (inProps.length > 0) return { type: "props", keys: inProps, query: text };
+
+  // ۴. جستجو در props فقط برای کلمات کلیدی خاص
+  const KEYWORDS = ["ضد التهاب", "ضد تهوع", "ضد سرفه", "ضد سرطان", "ضد باکتری",
+                    "ضد ویروس", "ضد درد", "ضد نفخ", "ضد افسردگی", "ضد حساسیت",
+                    "بهبود هضم", "بهبود خواب", "بهبود گوارش", "کاهش فشار خون",
+                    "کاهش قند خون", "کاهش کلسترول", "تقویت ایمنی", "تقویت حافظه",
+                    "آرام‌بخش", "آنتی‌اکسیدان", "سلامت قلب", "سلامت کبد",
+                    "سلامت کلیه", "سلامت پوست", "سلامت چشم", "سم‌زدایی"];
+
+  const matchedKeyword = KEYWORDS.find(kw =>
+    normalize(q).includes(normalize(kw)) || normalize(kw).includes(normalize(q))
+  );
+
+  if (matchedKeyword) {
+    const inProps = Object.keys(HERBS).filter(k =>
+      normalize(HERBS[k].props).includes(normalize(matchedKeyword))
+    );
+    if (inProps.length > 0) {
+      return { type: "props", keys: inProps, query: matchedKeyword };
+    }
+  }
+
   return { type: "none" };
 }
 
@@ -546,11 +581,11 @@ module.exports = async (req, res) => {
         `سلام ${firstName} 👋\n\n` +
         `🌿 به ربات دانشنامه ابن سینا خوش آمدی!\n\n` +
         `می‌تونی:\n` +
-        `• اسم گیاه یا میوه بنویسی\n` +
-        `• از دسته‌بندی‌ها استفاده کنی\n` +
-        `• اسم بیماری یا خاصیت رو بزنی\n` +
+        `• با ابن‌سینا و قانون آشنا بشی\n` +
+        `• خلاصه رایگان قانون رو بگیری\n` +
+        `• کتاب کامل رو بخری\n` +
+        `• گیاهان و میوه‌ها رو جستجو کنی\n` +
         `• مزاج خودت رو بشناسی\n` +
-        `• کتاب قانون ابن سینا رو بخری\n` +
         `• با پشتیبانی در ارتباط باشی`,
         MAIN_MENU
       );
@@ -561,14 +596,33 @@ module.exports = async (req, res) => {
     if (text === "❓ راهنما" || text === "/help") {
       await sendMessage(chatId,
         `📖 راهنما:\n\n` +
+        `📖 معرفی ابن‌سینا و قانون — آشنایی با حکیم هزاره\n` +
+        `📚 خلاصه رایگان قانون — دریافت خلاصه PDF\n` +
+        `📖 فروش کتاب قانون — خرید کتاب کامل\n` +
         `🌿🍎 جستجوی گیاه و میوه — اسم گیاه یا میوه\n` +
         `📂 دسته‌بندی‌ها — گیاهان بر اساس حوزه\n` +
         `🩺 جستجوی بیماری — گیاهان مفید\n` +
         `🧠 مزاج خودت را بشناس — تست مزاج\n` +
-        `📖 فروش کتاب قانون — خرید کتاب ابن سینا\n` +
         `📞 پشتیبانی — ارتباط با ادمین\n\n` +
         `⚠️ محتوای آموزشی — جایگزین پزشک نیست.`,
         MAIN_MENU
+      );
+      return res.status(200).send("OK");
+    }
+
+    // ---- معرفی ابن‌سینا ----
+    if (text === "📖 معرفی ابن‌سینا و قانون") {
+      await sendMessage(chatId, booksConfig.avicennaIntro, MAIN_MENU);
+      return res.status(200).send("OK");
+    }
+
+    // ---- خلاصه رایگان ----
+    if (text === "📚 خلاصه رایگان قانون") {
+      await sendDocument(chatId, booksConfig.summaryUrl,
+        `📚 خلاصه رایگان قانون ابن‌سینا\n\n` +
+        `📖 کتاب اول: کلیات\n\n` +
+        `📌 این خلاصه، رایگانه. برای دریافت کتاب کامل (۵۳ صفحه)، دکمه «📖 فروش کتاب قانون» رو بزنید.\n\n` +
+        `🌿 سلامت و سبک زندگی — دانشنامه ابن‌سینا`
       );
       return res.status(200).send("OK");
     }

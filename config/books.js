@@ -9,17 +9,9 @@ module.exports = {
     {
       id: "book_1",
       title: "کتاب قانون ابن‌سینا - کتاب اول",
-      description: "ترجمه و خلاصه کاربردی - ۵۲ صفحه PDF",
-      price: 50000, // قیمت به تومان
-      fileUrl: "https://github.com/USERNAME/herbot/releases/download/v1.0/ghanoon-book1.pdf"
-    },
-    // ---- کتاب‌های بعدی رو اینجا اضافه کن ----
-    // {
-    //   id: "book_2",
-    //   title: "کتاب قانون - کتاب دوم",
-    //   description: "ترجمه و خلاصه کاربردی",
-    //   price: 60000,
-    //   fileUrl: "https://github.com/..."
-    // }
+      description: "ترجمه و خلاصه کاربردی - ۵۳ صفحه PDF",
+      price: 50000,
+      fileUrl: "https://github.com/whalsearch/herbot/releases/download/v1.0/ghanoon-book1.pdf"
+    }
   ]
 };

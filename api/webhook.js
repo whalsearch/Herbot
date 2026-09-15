@@ -372,7 +372,7 @@ function normalize(text) {
 }
 
 // ==========================================
-// جستجوی هوشمند (با کلمات کلیدی)
+// جستجوی هوشمند
 // ==========================================
 function smartSearch(text) {
   const q = normalize(text);
@@ -401,7 +401,7 @@ function smartSearch(text) {
                     "سلامت کلیه", "سلامت پوست", "سلامت چشم", "سم‌زدایی"];
 
   const matchedKeyword = KEYWORDS.find(kw =>
-    normalize(q).includes(normalize(kw)) || normalize(kw).includes(normalize(q))
+    normalize(q) === normalize(kw)
   );
 
   if (matchedKeyword) {
@@ -815,7 +815,7 @@ async function sendMessage(chatId, text, keyboard) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(15000)
+        signal: AbortSignal.timeout(30000)
       });
       const d = await r.json();
       if (d.ok) return true;
@@ -837,7 +837,7 @@ async function sendMessageWithKeyboard(chatId, text, inlineKeyboard) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(15000)
+        signal: AbortSignal.timeout(30000)
       });
       const d = await r.json();
       if (d.ok) return true;
@@ -860,7 +860,7 @@ async function editMessage(chatId, messageId, text, inlineKeyboard) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(15000)
+        signal: AbortSignal.timeout(30000)
       });
       const d = await r.json();
       if (d.ok) return true;
@@ -883,7 +883,7 @@ async function answerCallback(callbackId, text) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(15000)
       });
       return;
     } catch (e) { console.error(`❌ Callback error:`, e.message); }
@@ -906,7 +906,7 @@ async function sendInvoice(chatId, title, description, payload, providerToken, c
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(15000)
+        signal: AbortSignal.timeout(30000)
       });
       const d = await r.json();
       console.log(`📤 Invoice:`, JSON.stringify(d));
@@ -929,7 +929,7 @@ async function answerPreCheckoutQuery(queryId, ok) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(15000)
       });
       const d = await r.json();
       console.log(`✅ PreCheckout:`, JSON.stringify(d));

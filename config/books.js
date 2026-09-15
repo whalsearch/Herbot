@@ -11,7 +11,7 @@ module.exports = {
       title: "کتاب قانون ابن‌سینا - کتاب اول",
       description: "ترجمه و خلاصه کاربردی - ۵۳ صفحه PDF",
       price: 50000,
-      fileUrl: "https://github.com/whalsearch/herbot/releases/download/v1.0/ghanoon-book1.pdf"
+      fileUrl: "https://herbot-beryl.vercel.app/ghanoon-book1.pdf"
     }
   ]
 };

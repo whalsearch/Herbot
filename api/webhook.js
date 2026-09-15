@@ -3,9 +3,7 @@ const PROVIDER_TOKEN = process.env.BALE_PROVIDER_TOKEN;
 const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID;
 const USDA_KEY = process.env.USDA_API_KEY || "DEMO_KEY";
 
-// آدرس فایل کتاب (بعد از آپلود در GitHub Releases، عوض کن)
-const BOOK_FILE_URL = "https://github.com/USERNAME/REPO/releases/download/v1.0/ghanoon-book1.pdf";
-const BOOK_PRICE = 80000; // تومان
+const booksConfig = require("../config/books");
 
 // ==========================================
 // سوالات مزاج‌شناسی
@@ -470,34 +468,25 @@ function formatNutrients(food) {
   return text || "اطلاعات مواد مغذی موجود نیست.";
 }
 
-// ==========================================
-// محاسبه نتیجه مزاج
-// ==========================================
 function computeMizaj(wc, dm) {
   let mizaj, emoji, desc, advice;
-
   if (wc >= 0 && dm >= 0) {
-    mizaj = "گرم و خشک (صفراوی)";
-    emoji = "🔥🌵";
+    mizaj = "گرم و خشک (صفراوی)"; emoji = "🔥🌵";
     desc = "مزاج شما گرم و خشک است. بدنی لاغر و خوش‌اندام دارید، خوابتان کم و سبک است، زودرنج و عصبی هستید و انرژی زیادی دارید ولی زود خسته می‌شوید.";
     advice = "غذاهای خنک و مرطوب بخورید (کاهو، خیار، ماست، دوغ). از ادویه تند، قهوه و گوشت سرخ‌شده کمتر مصرف کنید. آب کافی بنوشید و خواب کافی داشته باشید.";
   } else if (wc >= 0 && dm < 0) {
-    mizaj = "گرم و تر (دموی)";
-    emoji = "🔥💧";
+    mizaj = "گرم و تر (دموی)"; emoji = "🔥💧";
     desc = "مزاج شما گرم و تر است. بدنی پرگوشت و خوش‌رنگ دارید، خوابتان زیاد و سنگین است، پرحرف و اجتماعی هستید و اشتهای زیادی دارید.";
     advice = "غذاهای خنک بخورید (سبزیجات خنک، میوه‌های ترش، حبوبات). از گوشت قرمز، شیرینیجات و چربی سنگین کمتر مصرف کنید. بیشتر تحرک داشته باشید.";
   } else if (wc < 0 && dm < 0) {
-    mizaj = "سرد و تر (بلغمی)";
-    emoji = "❄️💧";
+    mizaj = "سرد و تر (بلغمی)"; emoji = "❄️💧";
     desc = "مزاج شما سرد و تر است. بدنی نرم و پفکی دارید، خوابتان زیاد و سنگین است، کم‌تحرک و آرام هستید و دست و پایتان سرد می‌شود.";
     advice = "غذاهای گرم و خشک بخورید (زنجبیل، دارچین، خرما، انجیر، گوشت گرم، عسل). از لبنیات سرد، ترشیجات و هندوانه کمتر مصرف کنید. بیشتر تحرک کنید و کمتر بخوابید.";
   } else {
-    mizaj = "سرد و خشک (سوداوی)";
-    emoji = "❄️🌵";
+    mizaj = "سرد و خشک (سوداوی)"; emoji = "❄️🌵";
     desc = "مزاج شما سرد و خشک است. بدنی لاغر و استخوانی دارید، خوابتان کم و آشفته است، فکور و درون‌گرا هستید و زودشک و حساس می‌شوید.";
     advice = "غذاهای گرم و مرطوب بخورید (گوشت، تخم‌مرغ، میوه‌های شیرین، روغن زیتون، شیر گرم با عسل). از غذاهای سرد و خشک، ترشیجات و فست‌فود کمتر مصرف کنید. شاد باشید و معاشرت کنید.";
   }
-
   return { mizaj, emoji, desc, advice };
 }
 
@@ -512,14 +501,60 @@ module.exports = async (req, res) => {
     const message = update.message || update.edited_message;
     const callbackQuery = update.callback_query;
 
-    // ---- پردازش دکمه‌های شیشه‌ای ----
+    // ========== ۱. تأیید پیش از پرداخت ==========
+    if (update.pre_checkout_query) {
+      const q = update.pre_checkout_query;
+      console.log("💳 PreCheckout:", q.invoice_payload);
+      await answerPreCheckoutQuery(q.id, true);
+      return res.status(200).send("OK");
+    }
+
+    // ========== ۲. پرداخت موفق ==========
+    if (message && message.successful_payment) {
+      const payment = message.successful_payment;
+      const chatId = message.chat.id;
+      const user = message.from;
+
+      console.log("✅ Payment:", payment.invoice_payload);
+
+      // پیدا کردن کتاب
+      const book = booksConfig.books.find(b => b.id === payment.invoice_payload);
+
+      if (book) {
+        // ارسال فایل کتاب
+        await sendDocument(chatId, book.fileUrl,
+          `✅ از خرید شما سپاسگزاریم!\n\n` +
+          `📖 ${book.title}\n\n` +
+          `🔑 کد پیگیری: ${payment.provider_payment_charge_id}\n\n` +
+          `📌 برای استفاده: فایل PDF بالا را دانلود کنید.`
+        );
+
+        // اطلاع به ادمین
+        if (ADMIN_CHAT_ID) {
+          const amountToman = (payment.total_amount / 10).toLocaleString("fa-IR");
+          await sendMessage(ADMIN_CHAT_ID,
+            `🔔 فروش جدید!\n\n` +
+            `👤 کاربر: ${user.first_name} ${user.last_name || ""}\n` +
+            `🆔 آیدی: ${user.id}\n` +
+            `💰 مبلغ: ${amountToman} تومان\n` +
+            `📦 محصول: ${book.title}\n` +
+            `🔑 کد پیگیری: ${payment.provider_payment_charge_id}`
+          );
+        }
+      } else {
+        console.error("❌ Book not found:", payment.invoice_payload);
+      }
+
+      return res.status(200).send("OK");
+    }
+
+    // ========== ۳. دکمه‌های شیشه‌ای ==========
     if (callbackQuery) {
       const chatId = callbackQuery.message.chat.id;
       const messageId = callbackQuery.message.message_id;
       const callbackId = callbackQuery.id;
       const data = callbackQuery.data;
 
-      // ---- مزاج: پاسخ به سوال ----
       if (data.startsWith("mz|")) {
         const parts = data.split("|");
         const nextQ = parseInt(parts[1]);
@@ -529,7 +564,6 @@ module.exports = async (req, res) => {
         await answerCallback(callbackId, "");
 
         if (nextQ >= MIZAJ_QUESTIONS.length) {
-          // ---- نمایش نتیجه ----
           const result = computeMizaj(wc, dm);
           await editMessage(chatId, messageId,
             `${result.emoji} مزاج شما: ${result.mizaj}\n\n` +
@@ -540,7 +574,6 @@ module.exports = async (req, res) => {
           return res.status(200).send("OK");
         }
 
-        // ---- نمایش سوال بعدی ----
         const q = MIZAJ_QUESTIONS[nextQ];
         const keyboard = {
           inline_keyboard: q.options.map(opt => ([{
@@ -551,6 +584,8 @@ module.exports = async (req, res) => {
         await editMessage(chatId, messageId, q.q, keyboard);
         return res.status(200).send("OK");
       }
+
+      return res.status(200).send("OK");
     }
 
     if (!message) return res.status(200).send("OK");
@@ -559,7 +594,6 @@ module.exports = async (req, res) => {
     const text = (message.text || "").trim();
     const firstName = message.from?.first_name || "دوست عزیز";
 
-    // ---- /start ----
     if (text === "/start") {
       await sendMessage(chatId,
         `سلام ${firstName} 👋\n\n` +
@@ -575,7 +609,6 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // ---- راهنما ----
     if (text === "❓ راهنما" || text === "/help") {
       await sendMessage(chatId,
         `📖 راهنما:\n\n` +
@@ -590,7 +623,6 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // ---- دسته‌بندی‌ها ----
     if (text === "📂 دسته‌بندی‌ها" || text === "/cats") {
       const cats = Object.keys(CATEGORIES);
       let catText = `📂 دسته‌بندی‌ها:\n\n`;
@@ -613,7 +645,6 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // ---- مزاج: شروع تست ----
     if (text === "🧠 مزاج خودت را بشناس") {
       const q = MIZAJ_QUESTIONS[0];
       const keyboard = {
@@ -626,20 +657,26 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // ---- فروش کتاب ----
+    // ========== فروش کتاب ==========
     if (text === "📖 فروش کتاب قانون") {
+      const book = booksConfig.books[0];
+      if (!book) {
+        await sendMessage(chatId, "⚠️ کتابی موجود نیست.", MAIN_MENU);
+        return res.status(200).send("OK");
+      }
+
       try {
         await sendInvoice(chatId,
-          "کتاب قانون ابن سینا - کتاب اول",
-          "ترجمه و خلاصه کاربردی - ۵۲ صفحه PDF",
-          "book_1_purchase",
+          book.title,
+          book.description,
+          book.id,
           PROVIDER_TOKEN,
           "IRR",
-          [{ label: "کتاب الکترونیکی", amount: BOOK_PRICE * 10 }]
+          [{ label: "کتاب الکترونیکی", amount: book.price * 10 }]
         );
       } catch (e) {
         console.error("Invoice error:", e.message);
-        await sendMessage(chatId, "⚠️ خطا در ساخت فاکتور. لطفاً بعداً تلاش کنید.", MAIN_MENU);
+        await sendMessage(chatId, "⚠️ خطا در ساخت فاکتور.", MAIN_MENU);
       }
       return res.status(200).send("OK");
     }
@@ -661,7 +698,6 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // ---- دسته ----
     const catMatch = Object.keys(CATEGORIES).find(c =>
       normalize(text) === normalize(c) || normalize(text).includes(normalize(c)) || normalize(c).includes(normalize(text))
     );
@@ -675,7 +711,6 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // ---- جستجوی هوشمند ----
     const result = smartSearch(text);
 
     if (result.type === "multi") {
@@ -705,7 +740,6 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // ---- نتیجه تکی ----
     const key = result.key;
     const herb = HERBS[key];
     await sendMessage(chatId, `🔎 در حال جستجوی «${key}»...`);
@@ -747,9 +781,7 @@ async function sendMessage(chatId, text, keyboard) {
       });
       const d = await r.json();
       if (d.ok) return true;
-    } catch (e) {
-      console.error(`❌ Send error:`, e.message);
-    }
+    } catch (e) { console.error(`❌ Send error:`, e.message); }
   }
   return false;
 }
@@ -759,11 +791,7 @@ async function sendMessageWithKeyboard(chatId, text, inlineKeyboard) {
     `https://tapi.bale.ai/bot${TOKEN}/sendMessage`,
     `https://botapi.bale.ai/bot${TOKEN}/sendMessage`
   ];
-  const body = {
-    chat_id: chatId,
-    text: text,
-    reply_markup: inlineKeyboard
-  };
+  const body = { chat_id: chatId, text: text, reply_markup: inlineKeyboard };
 
   for (const url of urls) {
     try {
@@ -775,9 +803,7 @@ async function sendMessageWithKeyboard(chatId, text, inlineKeyboard) {
       });
       const d = await r.json();
       if (d.ok) return true;
-    } catch (e) {
-      console.error(`❌ Send error:`, e.message);
-    }
+    } catch (e) { console.error(`❌ Send error:`, e.message); }
   }
   return false;
 }
@@ -787,11 +813,7 @@ async function editMessage(chatId, messageId, text, inlineKeyboard) {
     `https://tapi.bale.ai/bot${TOKEN}/editMessageText`,
     `https://botapi.bale.ai/bot${TOKEN}/editMessageText`
   ];
-  const body = {
-    chat_id: chatId,
-    message_id: messageId,
-    text: text
-  };
+  const body = { chat_id: chatId, message_id: messageId, text: text };
   if (inlineKeyboard) body.reply_markup = inlineKeyboard;
 
   for (const url of urls) {
@@ -804,9 +826,7 @@ async function editMessage(chatId, messageId, text, inlineKeyboard) {
       });
       const d = await r.json();
       if (d.ok) return true;
-    } catch (e) {
-      console.error(`❌ Edit error:`, e.message);
-    }
+    } catch (e) { console.error(`❌ Edit error:`, e.message); }
   }
   return false;
 }
@@ -828,9 +848,7 @@ async function answerCallback(callbackId, text) {
         signal: AbortSignal.timeout(10000)
       });
       return;
-    } catch (e) {
-      console.error(`❌ Callback error:`, e.message);
-    }
+    } catch (e) { console.error(`❌ Callback error:`, e.message); }
   }
 }
 
@@ -860,9 +878,52 @@ async function sendInvoice(chatId, title, description, payload, providerToken, c
       const d = await r.json();
       console.log(`📤 Invoice:`, JSON.stringify(d));
       return d;
-    } catch (e) {
-      console.error(`❌ Invoice error:`, e.message);
-    }
+    } catch (e) { console.error(`❌ Invoice error:`, e.message); }
   }
   return null;
+}
+
+async function answerPreCheckoutQuery(queryId, ok) {
+  const urls = [
+    `https://tapi.bale.ai/bot${TOKEN}/answerPreCheckoutQuery`,
+    `https://botapi.bale.ai/bot${TOKEN}/answerPreCheckoutQuery`
+  ];
+  const body = { pre_checkout_query_id: queryId, ok: ok };
+
+  for (const url of urls) {
+    try {
+      const r = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(10000)
+      });
+      const d = await r.json();
+      console.log(`✅ PreCheckout answered:`, JSON.stringify(d));
+      return;
+    } catch (e) { console.error(`❌ PreCheckout error:`, e.message); }
+  }
+}
+
+async function sendDocument(chatId, docUrl, caption) {
+  const urls = [
+    `https://tapi.bale.ai/bot${TOKEN}/sendDocument`,
+    `https://botapi.bale.ai/bot${TOKEN}/sendDocument`
+  ];
+  const body = { chat_id: chatId, document: docUrl, caption: caption || "" };
+
+  for (const url of urls) {
+    try {
+      const r = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(30000)
+      });
+      const d = await r.json();
+      console.log(`📄 Document sent:`, JSON.stringify(d));
+      if (d.ok) return true;
+    } catch (e) { console.error(`❌ Doc error:`, e.message); }
+  }
+  return false;
 }

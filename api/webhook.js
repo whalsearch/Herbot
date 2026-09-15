@@ -1,5 +1,81 @@
 const TOKEN = process.env.BALE_BOT_TOKEN;
+const PROVIDER_TOKEN = process.env.BALE_PROVIDER_TOKEN;
+const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID;
 const USDA_KEY = process.env.USDA_API_KEY || "DEMO_KEY";
+
+// آدرس فایل کتاب (بعد از آپلود در GitHub Releases، عوض کن)
+const BOOK_FILE_URL = "https://github.com/USERNAME/REPO/releases/download/v1.0/ghanoon-book1.pdf";
+const BOOK_PRICE = 80000; // تومان
+
+// ==========================================
+// سوالات مزاج‌شناسی
+// ==========================================
+const MIZAJ_QUESTIONS = [
+  {
+    q: "۱ از ۸\n\n🌡️ پوست شما معمولاً چگونه است؟",
+    options: [
+      { text: "خشک و زبر", wc: 0, dm: 2 },
+      { text: "چرب و نرم", wc: 0, dm: -2 },
+      { text: "معمولی", wc: 0, dm: 0 }
+    ]
+  },
+  {
+    q: "۲ از ۸\n\n😴 خواب شما معمولاً چگونه است؟",
+    options: [
+      { text: "کم و سبک", wc: 1, dm: 1 },
+      { text: "زیاد و سنگین", wc: -1, dm: -1 },
+      { text: "متوسط", wc: 0, dm: 0 }
+    ]
+  },
+  {
+    q: "۳ از ۸\n\n⚖️ وزن شما معمولاً چگونه است؟",
+    options: [
+      { text: "لاغر و استخوانی", wc: 0, dm: 2 },
+      { text: "پرگوشت", wc: 0, dm: -2 },
+      { text: "متوسط", wc: 0, dm: 0 }
+    ]
+  },
+  {
+    q: "۴ از ۸\n\n🚽 مدفوع شما معمولاً چگونه است؟",
+    options: [
+      { text: "خشک و سفت", wc: 0, dm: 2 },
+      { text: "نرم", wc: 0, dm: -2 },
+      { text: "معمولی", wc: 0, dm: 0 }
+    ]
+  },
+  {
+    q: "۵ از ۸\n\n🤲 دست و پای شما معمولاً چگونه است؟",
+    options: [
+      { text: "گرم", wc: 2, dm: 0 },
+      { text: "سرد", wc: -2, dm: 0 },
+      { text: "معمولی", wc: 0, dm: 0 }
+    ]
+  },
+  {
+    q: "۶ از ۸\n\n⚡ انرژی شما معمولاً چگونه است؟",
+    options: [
+      { text: "زیاد و پرانرژی", wc: 2, dm: 0 },
+      { text: "کم و خسته", wc: -2, dm: 0 },
+      { text: "متغیر", wc: 0, dm: 0 }
+    ]
+  },
+  {
+    q: "۷ از ۸\n\n😤 خلق و خوی شما معمولاً چگونه است؟",
+    options: [
+      { text: "زودرنج و عصبی", wc: 2, dm: 0 },
+      { text: "آرام و صبور", wc: -2, dm: 0 },
+      { text: "معمولی", wc: 0, dm: 0 }
+    ]
+  },
+  {
+    q: "۸ از ۸\n\n🍽️ هضم غذای شما معمولاً چگونه است؟",
+    options: [
+      { text: "سریع", wc: 2, dm: 0 },
+      { text: "کند", wc: -2, dm: 0 },
+      { text: "متوسط", wc: 0, dm: 0 }
+    ]
+  }
+];
 
 // ==========================================
 // دسته‌بندی‌ها
@@ -24,29 +100,17 @@ const CATEGORIES = {
 };
 
 const CAT_EN = {
-  "گوارش": "Digestion",
-  "قلب": "Heart",
-  "اعصاب": "Nervous System",
-  "تنفسی": "Respiratory",
-  "پوست": "Skin & Hair",
-  "مفاصل": "Joints",
-  "ایمنی": "Immunity",
-  "کبد": "Liver",
-  "کلیه": "Kidney",
-  "زنان": "Women",
-  "دیابت": "Diabetes",
-  "چشم": "Eyes",
-  "میوه": "Fruits",
-  "سبزیجات": "Vegetables",
-  "ادویه": "Spices",
-  "مغزها": "Nuts & Seeds"
+  "گوارش": "Digestion", "قلب": "Heart", "اعصاب": "Nervous System",
+  "تنفسی": "Respiratory", "پوست": "Skin & Hair", "مفاصل": "Joints",
+  "ایمنی": "Immunity", "کبد": "Liver", "کلیه": "Kidney", "زنان": "Women",
+  "دیابت": "Diabetes", "چشم": "Eyes", "میوه": "Fruits",
+  "سبزیجات": "Vegetables", "ادویه": "Spices", "مغزها": "Nuts & Seeds"
 };
 
 // ==========================================
 // دیتابیس گیاهان
 // ==========================================
 const HERBS = {
-  // ============ گوارش ============
   "زنجبیل": { en: "Ginger", cat: "گوارش", props: "ضد تهوع، ضد التهاب، بهبود هضم، تقویت ایمنی" },
   "نعنا": { en: "Mint", cat: "گوارش", props: "بهبود هضم، تسکین سردرد، رفع نفخ، ضد تهوع" },
   "رازیانه": { en: "Fennel", cat: "گوارش", props: "بهبود گوارش، ضد نفخ، تقویت ایمنی" },
@@ -71,8 +135,6 @@ const HERBS = {
   "خرفه": { en: "Purslane", cat: "گوارش", props: "کاهش قند خون، سلامت قلب، ضد التهاب" },
   "کاسنی": { en: "Chicory", cat: "گوارش", props: "بهبود گوارش، سلامت کبد، تقویت ایمنی" },
   "شاه‌تره": { en: "Cress", cat: "گوارش", props: "بهبود گوارش، تقویت ایمنی، ضد التهاب" },
-
-  // ============ قلب ============
   "سیر": { en: "Garlic", cat: "قلب", props: "کاهش فشار خون، کاهش کلسترول، ضد سرطان" },
   "زالزالک": { en: "Hawthorn", cat: "قلب", props: "سلامت قلب، کاهش فشار خون، آرام‌بخش" },
   "دارچین": { en: "Cinnamon", cat: "قلب", props: "کاهش قند خون، ضد التهاب، آنتی‌اکسیدان" },
@@ -88,8 +150,6 @@ const HERBS = {
   "عناب": { en: "Jujube", cat: "قلب", props: "سلامت قلب، آرام‌بخش، تقویت ایمنی" },
   "کنجد": { en: "Sesame", cat: "قلب", props: "سلامت استخوان، سلامت قلب، تقویت مو" },
   "تخم کتان": { en: "Flaxseed", cat: "قلب", props: "کاهش کلسترول، سلامت قلب، بهبود گوارش" },
-
-  // ============ اعصاب ============
   "اسطوخودوس": { en: "Lavender", cat: "اعصاب", props: "آرام‌بخش، بهبود خواب، کاهش اضطراب" },
   "سنبل الطیب": { en: "Valerian", cat: "اعصاب", props: "آرام‌بخش، بهبود خواب، ضد اسپاسم" },
   "گل گاوزبان": { en: "Borage", cat: "اعصاب", props: "آرام‌بخش، ضد التهاب، سلامت کبد" },
@@ -105,8 +165,6 @@ const HERBS = {
   "چای سفید": { en: "White Tea", cat: "اعصاب", props: "آنتی‌اکسیدان، آرام‌بخش، تقویت ایمنی" },
   "مریم نخودی": { en: "Teucrium", cat: "اعصاب", props: "آرام‌بخش، کاهش اضطراب، بهبود خواب" },
   "بادرنجبویه کوهی": { en: "Melissa", cat: "اعصاب", props: "آرام‌بخش، ضد اضطراب، بهبود گوارش" },
-
-  // ============ تنفسی ============
   "آویشن": { en: "Thyme", cat: "تنفسی", props: "ضد باکتری، ضد سرفه، سلامت ریه" },
   "پونه": { en: "Oregano", cat: "تنفسی", props: "ضد باکتری، ضد ویروس، سلامت ریه" },
   "اکالیپتوس": { en: "Eucalyptus", cat: "تنفسی", props: "ضد سرفه، خلط‌آور، ضد احتقان" },
@@ -119,8 +177,6 @@ const HERBS = {
   "گل ختمی تنفسی": { en: "Marshmallow Root", cat: "تنفسی", props: "ضد سرفه، بهبود گلو، ضد التهاب" },
   "شیرین بیان تنفسی": { en: "Licorice Root", cat: "تنفسی", props: "ضد سرفه، خلط‌آور، تقویت ایمنی" },
   "آنغوزه": { en: "Asafoetida", cat: "تنفسی", props: "ضد سرفه، ضد نفخ، تقویت گوارش" },
-
-  // ============ پوست ============
   "گل محمدی": { en: "Rose", cat: "پوست", props: "آرام‌بخش، سلامت پوست، ضد التهاب" },
   "آلوئه ورا": { en: "Aloe Vera", cat: "پوست", props: "سلامت پوست، بهبود سوختگی، تقویت ایمنی" },
   "گزنه": { en: "Nettle", cat: "پوست", props: "سلامت پوست، تقویت مو، سلامت پروستات" },
@@ -131,16 +187,12 @@ const HERBS = {
   "اسطوخودوس فرانسوی": { en: "French Lavender", cat: "پوست", props: "سلامت پوست، آرام‌بخش، ضد التهاب" },
   "چای سبز": { en: "Green Tea", cat: "پوست", props: "آنتی‌اکسیدان قوی، سلامت پوست، کاهش وزن" },
   "روغن نارگیل": { en: "Coconut Oil", cat: "پوست", props: "سلامت پوست، سلامت مو، تقویت ایمنی" },
-
-  // ============ مفاصل ============
   "پنجه گربه": { en: "Cat's Claw", cat: "مفاصل", props: "ضد التهاب مفاصل، تقویت ایمنی" },
   "بید": { en: "Willow", cat: "مفاصل", props: "ضد درد، ضد التهاب، کاهش تب" },
   "آووکادو سویا": { en: "Avocado Soybean", cat: "مفاصل", props: "ضد التهاب مفاصل، سلامت غضروف" },
   "کندر": { en: "Frankincense", cat: "مفاصل", props: "ضد التهاب مفاصل، بهبود آرتریت" },
   "مریمی": { en: "Boswellia", cat: "مفاصل", props: "ضد التهاب مفاصل، سلامت غضروف" },
   "تخم گشنیز": { en: "Coriander Seed", cat: "مفاصل", props: "ضد التهاب، سلامت مفاصل" },
-
-  // ============ ایمنی ============
   "سیاه دانه": { en: "Black Seed", cat: "ایمنی", props: "تقویت ایمنی، ضد التهاب، ضد حساسیت" },
   "اکیناسه": { en: "Echinacea", cat: "ایمنی", props: "تقویت ایمنی، پیشگیری از سرماخوردگی" },
   "شیرین بیان کوهی": { en: "Wild Licorice", cat: "ایمنی", props: "تقویت ایمنی، ضد ویروس" },
@@ -150,43 +202,31 @@ const HERBS = {
   "شیتاکه": { en: "Shiitake", cat: "ایمنی", props: "تقویت ایمنی، کاهش کلسترول، ضد سرطان" },
   "مای‌تاکه": { en: "Maitake", cat: "ایمنی", props: "تقویت ایمنی، کاهش قند خون" },
   "کوردیسپس": { en: "Cordyceps", cat: "ایمنی", props: "تقویت ایمنی، افزایش انرژی، سلامت کلیه" },
-
-  // ============ کبد ============
   "خار مریم": { en: "Milk Thistle", cat: "کبد", props: "سلامت کبد، سم‌زدایی، آنتی‌اکسیدان" },
   "قاصدک": { en: "Dandelion", cat: "کبد", props: "سم‌زدایی کبد، بهبود گوارش، سلامت کلیه" },
   "زرشک": { en: "Barberry", cat: "کبد", props: "سلامت کبد، کاهش قند خون، بهبود گوارش" },
   "شاه‌پسند": { en: "Vitex", cat: "کبد", props: "سلامت کبد، تعادل هورمونی، سلامت بانوان" },
   "کنگر وحشی": { en: "Wild Artichoke", cat: "کبد", props: "سلامت کبد، کاهش کلسترول، سم‌زدایی" },
   "چای کوهی": { en: "Mountain Tea", cat: "کبد", props: "سلامت کبد، آرام‌بخش، تقویت ایمنی" },
-
-  // ============ کلیه ============
   "خارخاسک": { en: "Tribulus", cat: "کلیه", props: "سلامت کلیه، ضد سنگ کلیه، تقویت قوای جسمانی" },
   "دم اسب کوهی": { en: "Wild Horsetail", cat: "کلیه", props: "سلامت کلیه، ضد سنگ کلیه، مدر طبیعی" },
   "جعفری کوهی": { en: "Wild Parsley", cat: "کلیه", props: "سلامت کلیه، سم‌زدایی، تقویت ایمنی" },
   "کاکل ذرت": { en: "Corn Silk", cat: "کلیه", props: "سلامت کلیه، ضد سنگ کلیه، مدر طبیعی" },
   "گزنه کلیه": { en: "Nettle Kidney", cat: "کلیه", props: "سلامت کلیه، ضد التهاب، تقویت ایمنی" },
-
-  // ============ زنان ============
   "پنج انگشت": { en: "Chasteberry", cat: "زنان", props: "تعادل هورمونی، کاهش علائم PMS" },
   "رازیانه زنانه": { en: "Fennel Female", cat: "زنان", props: "تعادل هورمونی، افزایش شیر مادران" },
   "شنبلیله زنانه": { en: "Fenugreek Female", cat: "زنان", props: "افزایش شیر مادران، تعادل هورمونی" },
   "گل راعی زنانه": { en: "St John's Wort Female", cat: "زنان", props: "ضد افسردگی PMS، آرام‌بخش" },
   "اسطوخودوس زنانه": { en: "Lavender Female", cat: "زنان", props: "کاهش درد قاعدگی، آرام‌بخش" },
-
-  // ============ دیابت ============
   "شنبلیله دیابتی": { en: "Fenugreek Diabetic", cat: "دیابت", props: "کاهش قند خون، بهبود حساسیت انسولین" },
   "دارچین دیابتی": { en: "Cinnamon Diabetic", cat: "دیابت", props: "کاهش قند خون، بهبود حساسیت انسولین" },
   "سیر دیابتی": { en: "Garlic Diabetic", cat: "دیابت", props: "کاهش قند خون، کاهش کلسترول" },
   "پیاز دیابتی": { en: "Onion Diabetic", cat: "دیابت", props: "کاهش قند خون، سلامت قلب" },
-
-  // ============ چشم ============
   "بلوبری چشمی": { en: "Blueberry Eye", cat: "چشم", props: "سلامت چشم، بهبود بینایی، آنتی‌اکسیدان" },
   "زعفران چشمی": { en: "Saffron Eye", cat: "چشم", props: "سلامت چشم، بهبود بینایی" },
   "همیشه بهار چشمی": { en: "Calendula Eye", cat: "چشم", props: "سلامت چشم، ضد التهاب" },
   "زغال‌اخته چشمی": { en: "Bilberry Eye", cat: "چشم", props: "سلامت چشم، بهبود گردش خون" },
   "چای سبز چشمی": { en: "Green Tea Eye", cat: "چشم", props: "سلامت چشم، آنتی‌اکسیدان" },
-
-  // ============ میوه‌ها ============
   "سیب": { en: "Apple", cat: "میوه", props: "تقویت ایمنی، سلامت قلب، پیشگیری از دیابت" },
   "موز": { en: "Banana", cat: "میوه", props: "تنظیم فشار خون، انرژی‌بخش، سلامت قلب" },
   "پرتقال": { en: "Orange", cat: "میوه", props: "پیشگیری از سرماخوردگی، سلامت پوست" },
@@ -229,8 +269,6 @@ const HERBS = {
   "نارنگی": { en: "Tangerine", cat: "میوه", props: "تقویت ایمنی، سلامت پوست، بهبود گوارش" },
   "آناناس تازه": { en: "Fresh Pineapple", cat: "میوه", props: "ضد التهاب، بهبود گوارش، تقویت ایمنی" },
   "انجیر خشک": { en: "Dried Fig", cat: "میوه", props: "بهبود گوارش، تقویت استخوان، انرژی‌بخش" },
-
-  // ============ سبزیجات ============
   "هویج": { en: "Carrot", cat: "سبزیجات", props: "تقویت بینایی، سلامت پوست، سلامت قلب" },
   "گوجه": { en: "Tomato", cat: "سبزیجات", props: "پیشگیری از سرطان پروستات، سلامت قلب" },
   "خیار": { en: "Cucumber", cat: "سبزیجات", props: "آبرسانی، کاهش فشار خون، سم‌زدایی" },
@@ -269,16 +307,12 @@ const HERBS = {
   "کاهوی رومی": { en: "Romaine Lettuce", cat: "سبزیجات", props: "آبرسانی، سلامت چشم، آرام‌بخش" },
   "ریشه کاسنی": { en: "Chicory Root", cat: "سبزیجات", props: "سلامت کبد، بهبود گوارش، تقویت ایمنی" },
   "ریشه جعفری": { en: "Parsley Root", cat: "سبزیجات", props: "سلامت کلیه، سم‌زدایی، تقویت ایمنی" },
-
-  // ============ ادویه‌جات ============
   "فلفل سیاه": { en: "Black Pepper", cat: "ادویه", props: "بهبود گوارش، ضد التهاب، تقویت ایمنی" },
   "فلفل قرمز": { en: "Red Pepper", cat: "ادویه", props: "افزایش متابولیسم، ضد درد، سلامت قلب" },
   "جوز هندی": { en: "Nutmeg", cat: "ادویه", props: "آرام‌بخش، بهبود گوارش، تقویت ایمنی" },
   "میخک": { en: "Clove Whole", cat: "ادویه", props: "ضد درد، ضد باکتری، بهبود گوارش" },
   "سماق": { en: "Sumac", cat: "ادویه", props: "آنتی‌اکسیدان، بهبود گوارش، کاهش قند خون" },
   "ریحان خشک": { en: "Dried Basil", cat: "ادویه", props: "ضد التهاب، بهبود گوارش" },
-
-  // ============ مغزها و دانه‌ها ============
   "بادام": { en: "Almond", cat: "مغزها", props: "سلامت قلب، تقویت استخوان، کاهش کلسترول" },
   "گردو": { en: "Walnut", cat: "مغزها", props: "سلامت مغز، سلامت قلب، آنتی‌اکسیدان" },
   "پسته": { en: "Pistachio", cat: "مغزها", props: "سلامت قلب، کاهش کلسترول، تقویت ایمنی" },
@@ -295,9 +329,6 @@ const HERBS = {
   "تخم رازیانه": { en: "Fennel Seed", cat: "مغزها", props: "بهبود گوارش، ضد نفخ، تقویت ایمنی" }
 };
 
-// ==========================================
-// بیماری → گیاه
-// ==========================================
 const DISEASES = {
   "یبوست": ["بارهنگ", "سنا", "خاکشیر", "انجیر", "آلو"],
   "نفخ": ["نعنا", "رازیانه", "زیره", "هل", "انیسون", "شوید"],
@@ -356,39 +387,25 @@ const DISEASES = {
   "سیاهی دور چشم": ["خیار", "گل محمدی", "چای سبز", "آلوئه ورا"]
 };
 
-// ==========================================
-// ترجمه واحدها و مواد مغذی
-// ==========================================
 const UNITS = { "G": "گرم", "MG": "میلی‌گرم", "UG": "میکروگرم", "KCAL": "کیلوکالری", "kJ": "کیلوژول", "IU": "واحد" };
-
 const NUTRIENTS = {
-  "Energy": "انرژی",
-  "Protein": "پروتئین",
-  "Total lipid (fat)": "چربی",
-  "Carbohydrate, by difference": "کربوهیدرات",
-  "Fiber, total dietary": "فیبر",
-  "Potassium, K": "پتاسیم",
-  "Calcium, Ca": "کلسیم",
-  "Iron, Fe": "آهن",
-  "Vitamin C, total ascorbic acid": "ویتامین C",
-  "Vitamin A, RAE": "ویتامین A"
+  "Energy": "انرژی", "Protein": "پروتئین", "Total lipid (fat)": "چربی",
+  "Carbohydrate, by difference": "کربوهیدرات", "Fiber, total dietary": "فیبر",
+  "Potassium, K": "پتاسیم", "Calcium, Ca": "کلسیم", "Iron, Fe": "آهن",
+  "Vitamin C, total ascorbic acid": "ویتامین C", "Vitamin A, RAE": "ویتامین A"
 };
 
-// ==========================================
-// منوی اصلی
-// ==========================================
 const MAIN_MENU = {
   keyboard: [
     [{ text: "🌿🍎 جستجوی گیاه و میوه" }],
     [{ text: "📂 دسته‌بندی‌ها" }, { text: "🩺 جستجوی بیماری" }],
+    [{ text: "🧠 مزاج خودت را بشناس" }],
+    [{ text: "📖 فروش کتاب قانون" }],
     [{ text: "❓ راهنما" }]
   ],
   resize_keyboard: true
 };
 
-// ==========================================
-// نرمال‌سازی متن فارسی
-// ==========================================
 function normalize(text) {
   if (!text) return "";
   return text
@@ -399,38 +416,21 @@ function normalize(text) {
     .trim();
 }
 
-// ==========================================
-// جستجوی هوشمند
-// ==========================================
 function smartSearch(text) {
   const q = normalize(text);
-
-  // ۱. مطابقت دقیق اسم
   let exact = Object.keys(HERBS).find(k => normalize(k) === q);
   if (exact) return { type: "single", key: exact };
-
-  // ۲. شروع با text
   const startsWith = Object.keys(HERBS).filter(k => normalize(k).startsWith(q));
   if (startsWith.length === 1) return { type: "single", key: startsWith[0] };
   if (startsWith.length > 1) return { type: "multi", keys: startsWith };
-
-  // ۳. text داخل اسم
   const containsName = Object.keys(HERBS).filter(k => normalize(k).includes(q));
   if (containsName.length === 1) return { type: "single", key: containsName[0] };
   if (containsName.length > 1) return { type: "multi", keys: containsName };
-
-  // ۴. جستجو در خواص
-  const inProps = Object.keys(HERBS).filter(k =>
-    normalize(HERBS[k].props).includes(q)
-  );
+  const inProps = Object.keys(HERBS).filter(k => normalize(HERBS[k].props).includes(q));
   if (inProps.length > 0) return { type: "props", keys: inProps, query: text };
-
   return { type: "none" };
 }
 
-// ==========================================
-// جستجو در USDA
-// ==========================================
 async function searchUSDA(name) {
   const url = `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${USDA_KEY}&query=${encodeURIComponent(name)}&pageSize=3&dataType=Foundation,SR%20Legacy`;
   try {
@@ -448,19 +448,13 @@ async function searchUSDA(name) {
       )
     );
     return valid.length > 0 ? valid[0] : foods[0];
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
 
-// ==========================================
-// ساخت متن مواد مغذی
-// ==========================================
 function formatNutrients(food) {
   if (!food || !food.foodNutrients) return "اطلاعات مواد مغذی موجود نیست.";
   const map = {};
   food.foodNutrients.forEach(n => { map[n.nutrientName] = n; });
-
   let text = "";
   Object.keys(NUTRIENTS).forEach(key => {
     if (map[key]) {
@@ -477,6 +471,37 @@ function formatNutrients(food) {
 }
 
 // ==========================================
+// محاسبه نتیجه مزاج
+// ==========================================
+function computeMizaj(wc, dm) {
+  let mizaj, emoji, desc, advice;
+
+  if (wc >= 0 && dm >= 0) {
+    mizaj = "گرم و خشک (صفراوی)";
+    emoji = "🔥🌵";
+    desc = "مزاج شما گرم و خشک است. بدنی لاغر و خوش‌اندام دارید، خوابتان کم و سبک است، زودرنج و عصبی هستید و انرژی زیادی دارید ولی زود خسته می‌شوید.";
+    advice = "غذاهای خنک و مرطوب بخورید (کاهو، خیار، ماست، دوغ). از ادویه تند، قهوه و گوشت سرخ‌شده کمتر مصرف کنید. آب کافی بنوشید و خواب کافی داشته باشید.";
+  } else if (wc >= 0 && dm < 0) {
+    mizaj = "گرم و تر (دموی)";
+    emoji = "🔥💧";
+    desc = "مزاج شما گرم و تر است. بدنی پرگوشت و خوش‌رنگ دارید، خوابتان زیاد و سنگین است، پرحرف و اجتماعی هستید و اشتهای زیادی دارید.";
+    advice = "غذاهای خنک بخورید (سبزیجات خنک، میوه‌های ترش، حبوبات). از گوشت قرمز، شیرینیجات و چربی سنگین کمتر مصرف کنید. بیشتر تحرک داشته باشید.";
+  } else if (wc < 0 && dm < 0) {
+    mizaj = "سرد و تر (بلغمی)";
+    emoji = "❄️💧";
+    desc = "مزاج شما سرد و تر است. بدنی نرم و پفکی دارید، خوابتان زیاد و سنگین است، کم‌تحرک و آرام هستید و دست و پایتان سرد می‌شود.";
+    advice = "غذاهای گرم و خشک بخورید (زنجبیل، دارچین، خرما، انجیر، گوشت گرم، عسل). از لبنیات سرد، ترشیجات و هندوانه کمتر مصرف کنید. بیشتر تحرک کنید و کمتر بخوابید.";
+  } else {
+    mizaj = "سرد و خشک (سوداوی)";
+    emoji = "❄️🌵";
+    desc = "مزاج شما سرد و خشک است. بدنی لاغر و استخوانی دارید، خوابتان کم و آشفته است، فکور و درون‌گرا هستید و زودشک و حساس می‌شوید.";
+    advice = "غذاهای گرم و مرطوب بخورید (گوشت، تخم‌مرغ، میوه‌های شیرین، روغن زیتون، شیر گرم با عسل). از غذاهای سرد و خشک، ترشیجات و فست‌فود کمتر مصرف کنید. شاد باشید و معاشرت کنید.";
+  }
+
+  return { mizaj, emoji, desc, advice };
+}
+
+// ==========================================
 // Webhook اصلی
 // ==========================================
 module.exports = async (req, res) => {
@@ -485,42 +510,87 @@ module.exports = async (req, res) => {
   try {
     const update = req.body;
     const message = update.message || update.edited_message;
+    const callbackQuery = update.callback_query;
+
+    // ---- پردازش دکمه‌های شیشه‌ای ----
+    if (callbackQuery) {
+      const chatId = callbackQuery.message.chat.id;
+      const messageId = callbackQuery.message.message_id;
+      const callbackId = callbackQuery.id;
+      const data = callbackQuery.data;
+
+      // ---- مزاج: پاسخ به سوال ----
+      if (data.startsWith("mz|")) {
+        const parts = data.split("|");
+        const nextQ = parseInt(parts[1]);
+        const wc = parseInt(parts[2]);
+        const dm = parseInt(parts[3]);
+
+        await answerCallback(callbackId, "");
+
+        if (nextQ >= MIZAJ_QUESTIONS.length) {
+          // ---- نمایش نتیجه ----
+          const result = computeMizaj(wc, dm);
+          await editMessage(chatId, messageId,
+            `${result.emoji} مزاج شما: ${result.mizaj}\n\n` +
+            `📋 ${result.desc}\n\n` +
+            `💡 توصیه:\n${result.advice}\n\n` +
+            `⚠️ این اطلاعات آموزشی است — جایگزین پزشک نیست.`
+          );
+          return res.status(200).send("OK");
+        }
+
+        // ---- نمایش سوال بعدی ----
+        const q = MIZAJ_QUESTIONS[nextQ];
+        const keyboard = {
+          inline_keyboard: q.options.map(opt => ([{
+            text: opt.text,
+            callback_data: `mz|${nextQ + 1}|${wc + opt.wc}|${dm + opt.dm}`
+          }]))
+        };
+        await editMessage(chatId, messageId, q.q, keyboard);
+        return res.status(200).send("OK");
+      }
+    }
+
     if (!message) return res.status(200).send("OK");
 
     const chatId = message.chat.id;
     const text = (message.text || "").trim();
     const firstName = message.from?.first_name || "دوست عزیز";
 
+    // ---- /start ----
     if (text === "/start") {
       await sendMessage(chatId,
         `سلام ${firstName} 👋\n\n` +
-        `🌿 به ربات دانشنامه گیاهان خوش آمدی!\n\n` +
+        `🌿 به ربات دانشنامه ابن سینا خوش آمدی!\n\n` +
         `می‌تونی:\n` +
         `• اسم گیاه یا میوه بنویسی\n` +
         `• از دسته‌بندی‌ها استفاده کنی\n` +
-        `• اسم بیماری یا خاصیت رو بزنی`,
+        `• اسم بیماری یا خاصیت رو بزنی\n` +
+        `• مزاج خودت رو بشناسی\n` +
+        `• کتاب قانون ابن سینا رو بخری`,
         MAIN_MENU
       );
       return res.status(200).send("OK");
     }
 
+    // ---- راهنما ----
     if (text === "❓ راهنما" || text === "/help") {
       await sendMessage(chatId,
         `📖 راهنما:\n\n` +
-        `🌿🍎 جستجوی گیاه و میوه — اسم گیاه، میوه یا خاصیت\n` +
+        `🌿🍎 جستجوی گیاه و میوه — اسم گیاه یا میوه\n` +
         `📂 دسته‌بندی‌ها — گیاهان بر اساس حوزه\n` +
-        `🩺 جستجوی بیماری — گیاهان مفید\n\n` +
-        `💡 مثال:\n` +
-        `• «زنجبیل»، «سیب»\n` +
-        `• «آرام بخش»، «ضد التهاب»\n` +
-        `• «گوارش»، «میوه»\n` +
-        `• «یبوست»، «بی‌خوابی»\n\n` +
+        `🩺 جستجوی بیماری — گیاهان مفید\n` +
+        `🧠 مزاج خودت را بشناس — تست مزاج\n` +
+        `📖 فروش کتاب قانون — خرید کتاب ابن سینا\n\n` +
         `⚠️ محتوای آموزشی — جایگزین پزشک نیست.`,
         MAIN_MENU
       );
       return res.status(200).send("OK");
     }
 
+    // ---- دسته‌بندی‌ها ----
     if (text === "📂 دسته‌بندی‌ها" || text === "/cats") {
       const cats = Object.keys(CATEGORIES);
       let catText = `📂 دسته‌بندی‌ها:\n\n`;
@@ -531,20 +601,50 @@ module.exports = async (req, res) => {
     }
 
     if (text === "🌿🍎 جستجوی گیاه و میوه") {
-      await sendMessage(chatId, "🌿🍎 اسم گیاه، میوه یا خاصیت رو بنویس:", MAIN_MENU);
+      await sendMessage(chatId, "🌿🍎 اسم گیاه یا میوه رو بنویس:", MAIN_MENU);
       return res.status(200).send("OK");
     }
 
     if (text === "🩺 جستجوی بیماری") {
       await sendMessage(chatId,
-        `🩺 اسم بیماری یا مشکل رو بنویس:\n\n` +
-        `مثلاً: یبوست، بی‌خوابی، فشار خون، دیابت`,
+        `🩺 اسم بیماری یا مشکل رو بنویس:\n\nمثلاً: یبوست، بی‌خوابی، فشار خون، دیابت`,
         MAIN_MENU
       );
       return res.status(200).send("OK");
     }
 
-    // بیماری
+    // ---- مزاج: شروع تست ----
+    if (text === "🧠 مزاج خودت را بشناس") {
+      const q = MIZAJ_QUESTIONS[0];
+      const keyboard = {
+        inline_keyboard: q.options.map(opt => ([{
+          text: opt.text,
+          callback_data: `mz|1|${opt.wc}|${opt.dm}`
+        }]))
+      };
+      await sendMessageWithKeyboard(chatId, q.q, keyboard);
+      return res.status(200).send("OK");
+    }
+
+    // ---- فروش کتاب ----
+    if (text === "📖 فروش کتاب قانون") {
+      try {
+        await sendInvoice(chatId,
+          "کتاب قانون ابن سینا - کتاب اول",
+          "ترجمه و خلاصه کاربردی - ۵۲ صفحه PDF",
+          "book_1_purchase",
+          PROVIDER_TOKEN,
+          "IRR",
+          [{ label: "کتاب الکترونیکی", amount: BOOK_PRICE * 10 }]
+        );
+      } catch (e) {
+        console.error("Invoice error:", e.message);
+        await sendMessage(chatId, "⚠️ خطا در ساخت فاکتور. لطفاً بعداً تلاش کنید.", MAIN_MENU);
+      }
+      return res.status(200).send("OK");
+    }
+
+    // ---- بیماری ----
     const diseaseKey = Object.keys(DISEASES).find(d =>
       normalize(text) === normalize(d) || normalize(text).includes(normalize(d)) || normalize(d).includes(normalize(text))
     );
@@ -561,7 +661,7 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // دسته
+    // ---- دسته ----
     const catMatch = Object.keys(CATEGORIES).find(c =>
       normalize(text) === normalize(c) || normalize(text).includes(normalize(c)) || normalize(c).includes(normalize(text))
     );
@@ -575,14 +675,12 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // جستجوی هوشمند
+    // ---- جستجوی هوشمند ----
     const result = smartSearch(text);
 
     if (result.type === "multi") {
       let optText = `🔍 چند مورد پیدا شد. کدوم رو می‌خوای؟\n\n`;
-      result.keys.forEach((m) => {
-        optText += `🌿 ${m} (${HERBS[m].en})\n`;
-      });
+      result.keys.forEach((m) => { optText += `🌿 ${m} (${HERBS[m].en})\n`; });
       optText += `\n💡 اسم دقیق‌تر رو بنویس.`;
       await sendMessage(chatId, optText, MAIN_MENU);
       return res.status(200).send("OK");
@@ -593,9 +691,7 @@ module.exports = async (req, res) => {
       result.keys.slice(0, 20).forEach((m) => {
         pText += `🌿 ${m} (${HERBS[m].en})\n   ${HERBS[m].props}\n\n`;
       });
-      if (result.keys.length > 20) {
-        pText += `💡 و ${result.keys.length - 20} مورد دیگه...\n\n`;
-      }
+      if (result.keys.length > 20) pText += `💡 و ${result.keys.length - 20} مورد دیگه...\n\n`;
       pText += `⚠️ محتوای آموزشی — جایگزین پزشک نیست.`;
       await sendMessage(chatId, pText, MAIN_MENU);
       return res.status(200).send("OK");
@@ -603,28 +699,24 @@ module.exports = async (req, res) => {
 
     if (result.type === "none") {
       await sendMessage(chatId,
-        `❌ «${text}» پیدا نشد.\n\n` +
-        `💡 از «📂 دسته‌بندی‌ها» یا «🩺 جستجوی بیماری» استفاده کن.`,
+        `❌ «${text}» پیدا نشد.\n\n💡 از «📂 دسته‌بندی‌ها» یا «🩺 جستجوی بیماری» استفاده کن.`,
         MAIN_MENU
       );
       return res.status(200).send("OK");
     }
 
-    // نتیجه تکی
+    // ---- نتیجه تکی ----
     const key = result.key;
     const herb = HERBS[key];
     await sendMessage(chatId, `🔎 در حال جستجوی «${key}»...`);
-
     const food = await searchUSDA(herb.en);
     const nutrients = formatNutrients(food);
-
     const msg =
       `🌿 ${key} (${herb.en})\n` +
       `📂 ${herb.cat} • ${CAT_EN[herb.cat] || herb.cat}\n\n` +
       `🍃 خواص:\n${herb.props}\n\n` +
       `📊 مواد مغذی (در ۱۰۰ گرم):\n${nutrients}\n` +
       `⚠️ محتوای آموزشی — جایگزین پزشک نیست.`;
-
     await sendMessage(chatId, msg, MAIN_MENU);
 
   } catch (e) {
@@ -635,14 +727,13 @@ module.exports = async (req, res) => {
 };
 
 // ==========================================
-// ارسال پیام
+// توابع API بله
 // ==========================================
 async function sendMessage(chatId, text, keyboard) {
   const urls = [
     `https://tapi.bale.ai/bot${TOKEN}/sendMessage`,
     `https://botapi.bale.ai/bot${TOKEN}/sendMessage`
   ];
-
   const body = { chat_id: chatId, text };
   if (keyboard) body.reply_markup = keyboard;
 
@@ -661,4 +752,117 @@ async function sendMessage(chatId, text, keyboard) {
     }
   }
   return false;
+}
+
+async function sendMessageWithKeyboard(chatId, text, inlineKeyboard) {
+  const urls = [
+    `https://tapi.bale.ai/bot${TOKEN}/sendMessage`,
+    `https://botapi.bale.ai/bot${TOKEN}/sendMessage`
+  ];
+  const body = {
+    chat_id: chatId,
+    text: text,
+    reply_markup: inlineKeyboard
+  };
+
+  for (const url of urls) {
+    try {
+      const r = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(15000)
+      });
+      const d = await r.json();
+      if (d.ok) return true;
+    } catch (e) {
+      console.error(`❌ Send error:`, e.message);
+    }
+  }
+  return false;
+}
+
+async function editMessage(chatId, messageId, text, inlineKeyboard) {
+  const urls = [
+    `https://tapi.bale.ai/bot${TOKEN}/editMessageText`,
+    `https://botapi.bale.ai/bot${TOKEN}/editMessageText`
+  ];
+  const body = {
+    chat_id: chatId,
+    message_id: messageId,
+    text: text
+  };
+  if (inlineKeyboard) body.reply_markup = inlineKeyboard;
+
+  for (const url of urls) {
+    try {
+      const r = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(15000)
+      });
+      const d = await r.json();
+      if (d.ok) return true;
+    } catch (e) {
+      console.error(`❌ Edit error:`, e.message);
+    }
+  }
+  return false;
+}
+
+async function answerCallback(callbackId, text) {
+  const urls = [
+    `https://tapi.bale.ai/bot${TOKEN}/answerCallbackQuery`,
+    `https://botapi.bale.ai/bot${TOKEN}/answerCallbackQuery`
+  ];
+  const body = { callback_query_id: callbackId };
+  if (text) body.text = text;
+
+  for (const url of urls) {
+    try {
+      await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(10000)
+      });
+      return;
+    } catch (e) {
+      console.error(`❌ Callback error:`, e.message);
+    }
+  }
+}
+
+async function sendInvoice(chatId, title, description, payload, providerToken, currency, prices) {
+  const urls = [
+    `https://tapi.bale.ai/bot${TOKEN}/sendInvoice`,
+    `https://botapi.bale.ai/bot${TOKEN}/sendInvoice`
+  ];
+  const body = {
+    chat_id: chatId,
+    title: title,
+    description: description,
+    payload: payload,
+    provider_token: providerToken,
+    currency: currency,
+    prices: prices
+  };
+
+  for (const url of urls) {
+    try {
+      const r = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(15000)
+      });
+      const d = await r.json();
+      console.log(`📤 Invoice:`, JSON.stringify(d));
+      return d;
+    } catch (e) {
+      console.error(`❌ Invoice error:`, e.message);
+    }
+  }
+  return null;
 }

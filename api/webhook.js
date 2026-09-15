@@ -9,70 +9,22 @@ const booksConfig = require("../config/books");
 // سوالات مزاج‌شناسی
 // ==========================================
 const MIZAJ_QUESTIONS = [
-  {
-    q: "۱ از ۸\n\n🌡️ پوست شما معمولاً چگونه است؟",
-    options: [
-      { text: "خشک و زبر", wc: 0, dm: 2 },
-      { text: "چرب و نرم", wc: 0, dm: -2 },
-      { text: "معمولی", wc: 0, dm: 0 }
-    ]
-  },
-  {
-    q: "۲ از ۸\n\n😴 خواب شما معمولاً چگونه است؟",
-    options: [
-      { text: "کم و سبک", wc: 1, dm: 1 },
-      { text: "زیاد و سنگین", wc: -1, dm: -1 },
-      { text: "متوسط", wc: 0, dm: 0 }
-    ]
-  },
-  {
-    q: "۳ از ۸\n\n⚖️ وزن شما معمولاً چگونه است؟",
-    options: [
-      { text: "لاغر و استخوانی", wc: 0, dm: 2 },
-      { text: "پرگوشت", wc: 0, dm: -2 },
-      { text: "متوسط", wc: 0, dm: 0 }
-    ]
-  },
-  {
-    q: "۴ از ۸\n\n🚽 مدفوع شما معمولاً چگونه است؟",
-    options: [
-      { text: "خشک و سفت", wc: 0, dm: 2 },
-      { text: "نرم", wc: 0, dm: -2 },
-      { text: "معمولی", wc: 0, dm: 0 }
-    ]
-  },
-  {
-    q: "۵ از ۸\n\n🤲 دست و پای شما معمولاً چگونه است؟",
-    options: [
-      { text: "گرم", wc: 2, dm: 0 },
-      { text: "سرد", wc: -2, dm: 0 },
-      { text: "معمولی", wc: 0, dm: 0 }
-    ]
-  },
-  {
-    q: "۶ از ۸\n\n⚡ انرژی شما معمولاً چگونه است؟",
-    options: [
-      { text: "زیاد و پرانرژی", wc: 2, dm: 0 },
-      { text: "کم و خسته", wc: -2, dm: 0 },
-      { text: "متغیر", wc: 0, dm: 0 }
-    ]
-  },
-  {
-    q: "۷ از ۸\n\n😤 خلق و خوی شما معمولاً چگونه است؟",
-    options: [
-      { text: "زودرنج و عصبی", wc: 2, dm: 0 },
-      { text: "آرام و صبور", wc: -2, dm: 0 },
-      { text: "معمولی", wc: 0, dm: 0 }
-    ]
-  },
-  {
-    q: "۸ از ۸\n\n🍽️ هضم غذای شما معمولاً چگونه است؟",
-    options: [
-      { text: "سریع", wc: 2, dm: 0 },
-      { text: "کند", wc: -2, dm: 0 },
-      { text: "متوسط", wc: 0, dm: 0 }
-    ]
-  }
+  { q: "۱ از ۸\n\n🌡️ پوست شما معمولاً چگونه است؟",
+    options: [{ text: "خشک و زبر", wc: 0, dm: 2 }, { text: "چرب و نرم", wc: 0, dm: -2 }, { text: "معمولی", wc: 0, dm: 0 }] },
+  { q: "۲ از ۸\n\n😴 خواب شما معمولاً چگونه است؟",
+    options: [{ text: "کم و سبک", wc: 1, dm: 1 }, { text: "زیاد و سنگین", wc: -1, dm: -1 }, { text: "متوسط", wc: 0, dm: 0 }] },
+  { q: "۳ از ۸\n\n⚖️ وزن شما معمولاً چگونه است؟",
+    options: [{ text: "لاغر و استخوانی", wc: 0, dm: 2 }, { text: "پرگوشت", wc: 0, dm: -2 }, { text: "متوسط", wc: 0, dm: 0 }] },
+  { q: "۴ از ۸\n\n🚽 مدفوع شما معمولاً چگونه است؟",
+    options: [{ text: "خشک و سفت", wc: 0, dm: 2 }, { text: "نرم", wc: 0, dm: -2 }, { text: "معمولی", wc: 0, dm: 0 }] },
+  { q: "۵ از ۸\n\n🤲 دست و پای شما معمولاً چگونه است؟",
+    options: [{ text: "گرم", wc: 2, dm: 0 }, { text: "سرد", wc: -2, dm: 0 }, { text: "معمولی", wc: 0, dm: 0 }] },
+  { q: "۶ از ۸\n\n⚡ انرژی شما معمولاً چگونه است؟",
+    options: [{ text: "زیاد و پرانرژی", wc: 2, dm: 0 }, { text: "کم و خسته", wc: -2, dm: 0 }, { text: "متغیر", wc: 0, dm: 0 }] },
+  { q: "۷ از ۸\n\n😤 خلق و خوی شما معمولاً چگونه است؟",
+    options: [{ text: "زودرنج و عصبی", wc: 2, dm: 0 }, { text: "آرام و صبور", wc: -2, dm: 0 }, { text: "معمولی", wc: 0, dm: 0 }] },
+  { q: "۸ از ۸\n\n🍽️ هضم غذای شما معمولاً چگونه است؟",
+    options: [{ text: "سریع", wc: 2, dm: 0 }, { text: "کند", wc: -2, dm: 0 }, { text: "متوسط", wc: 0, dm: 0 }] }
 ];
 
 // ==========================================
@@ -399,7 +351,7 @@ const MAIN_MENU = {
     [{ text: "📂 دسته‌بندی‌ها" }, { text: "🩺 جستجوی بیماری" }],
     [{ text: "🧠 مزاج خودت را بشناس" }],
     [{ text: "📖 فروش کتاب قانون" }],
-    [{ text: "❓ راهنما" }]
+    [{ text: "📞 پشتیبانی" }, { text: "❓ راهنما" }]
   ],
   resize_keyboard: true
 };
@@ -501,7 +453,7 @@ module.exports = async (req, res) => {
     const message = update.message || update.edited_message;
     const callbackQuery = update.callback_query;
 
-    // ========== ۱. تأیید پیش از پرداخت ==========
+    // ---- PreCheckout ----
     if (update.pre_checkout_query) {
       const q = update.pre_checkout_query;
       console.log("💳 PreCheckout:", q.invoice_payload);
@@ -509,7 +461,7 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // ========== ۲. پرداخت موفق ==========
+    // ---- Successful Payment ----
     if (message && message.successful_payment) {
       const payment = message.successful_payment;
       const chatId = message.chat.id;
@@ -517,11 +469,9 @@ module.exports = async (req, res) => {
 
       console.log("✅ Payment:", payment.invoice_payload);
 
-      // پیدا کردن کتاب
       const book = booksConfig.books.find(b => b.id === payment.invoice_payload);
 
       if (book) {
-        // ارسال فایل کتاب
         await sendDocument(chatId, book.fileUrl,
           `✅ از خرید شما سپاسگزاریم!\n\n` +
           `📖 ${book.title}\n\n` +
@@ -529,7 +479,6 @@ module.exports = async (req, res) => {
           `📌 برای استفاده: فایل PDF بالا را دانلود کنید.`
         );
 
-        // اطلاع به ادمین
         if (ADMIN_CHAT_ID) {
           const amountToman = (payment.total_amount / 10).toLocaleString("fa-IR");
           await sendMessage(ADMIN_CHAT_ID,
@@ -541,14 +490,11 @@ module.exports = async (req, res) => {
             `🔑 کد پیگیری: ${payment.provider_payment_charge_id}`
           );
         }
-      } else {
-        console.error("❌ Book not found:", payment.invoice_payload);
       }
-
       return res.status(200).send("OK");
     }
 
-    // ========== ۳. دکمه‌های شیشه‌ای ==========
+    // ---- Callback Query ----
     if (callbackQuery) {
       const chatId = callbackQuery.message.chat.id;
       const messageId = callbackQuery.message.message_id;
@@ -594,6 +540,7 @@ module.exports = async (req, res) => {
     const text = (message.text || "").trim();
     const firstName = message.from?.first_name || "دوست عزیز";
 
+    // ---- /start ----
     if (text === "/start") {
       await sendMessage(chatId,
         `سلام ${firstName} 👋\n\n` +
@@ -603,12 +550,14 @@ module.exports = async (req, res) => {
         `• از دسته‌بندی‌ها استفاده کنی\n` +
         `• اسم بیماری یا خاصیت رو بزنی\n` +
         `• مزاج خودت رو بشناسی\n` +
-        `• کتاب قانون ابن سینا رو بخری`,
+        `• کتاب قانون ابن سینا رو بخری\n` +
+        `• با پشتیبانی در ارتباط باشی`,
         MAIN_MENU
       );
       return res.status(200).send("OK");
     }
 
+    // ---- راهنما ----
     if (text === "❓ راهنما" || text === "/help") {
       await sendMessage(chatId,
         `📖 راهنما:\n\n` +
@@ -616,13 +565,15 @@ module.exports = async (req, res) => {
         `📂 دسته‌بندی‌ها — گیاهان بر اساس حوزه\n` +
         `🩺 جستجوی بیماری — گیاهان مفید\n` +
         `🧠 مزاج خودت را بشناس — تست مزاج\n` +
-        `📖 فروش کتاب قانون — خرید کتاب ابن سینا\n\n` +
+        `📖 فروش کتاب قانون — خرید کتاب ابن سینا\n` +
+        `📞 پشتیبانی — ارتباط با ادمین\n\n` +
         `⚠️ محتوای آموزشی — جایگزین پزشک نیست.`,
         MAIN_MENU
       );
       return res.status(200).send("OK");
     }
 
+    // ---- دسته‌بندی‌ها ----
     if (text === "📂 دسته‌بندی‌ها" || text === "/cats") {
       const cats = Object.keys(CATEGORIES);
       let catText = `📂 دسته‌بندی‌ها:\n\n`;
@@ -645,6 +596,7 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
+    // ---- مزاج ----
     if (text === "🧠 مزاج خودت را بشناس") {
       const q = MIZAJ_QUESTIONS[0];
       const keyboard = {
@@ -657,7 +609,19 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    // ========== فروش کتاب ==========
+    // ---- پشتیبانی ----
+    if (text === "📞 پشتیبانی" || text === "/support") {
+      await sendMessage(chatId,
+        `📞 پشتیبانی\n\n` +
+        `سلام ${firstName} 👋\n\n` +
+        `پیامت رو همینجا بنویس.\n` +
+        `ادمین در اولین فرصت پاسخ می‌ده.`,
+        MAIN_MENU
+      );
+      return res.status(200).send("OK");
+    }
+
+    // ---- فروش کتاب ----
     if (text === "📖 فروش کتاب قانون") {
       const book = booksConfig.books[0];
       if (!book) {
@@ -698,6 +662,7 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
+    // ---- دسته ----
     const catMatch = Object.keys(CATEGORIES).find(c =>
       normalize(text) === normalize(c) || normalize(text).includes(normalize(c)) || normalize(c).includes(normalize(text))
     );
@@ -711,6 +676,7 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
+    // ---- جستجوی هوشمند ----
     const result = smartSearch(text);
 
     if (result.type === "multi") {
@@ -732,26 +698,44 @@ module.exports = async (req, res) => {
       return res.status(200).send("OK");
     }
 
-    if (result.type === "none") {
+    // ---- نتیجه تکی ----
+    if (result.type === "single") {
+      const key = result.key;
+      const herb = HERBS[key];
+      await sendMessage(chatId, `🔎 در حال جستجوی «${key}»...`);
+      const food = await searchUSDA(herb.en);
+      const nutrients = formatNutrients(food);
+      const msg =
+        `🌿 ${key} (${herb.en})\n` +
+        `📂 ${herb.cat} • ${CAT_EN[herb.cat] || herb.cat}\n\n` +
+        `🍃 خواص:\n${herb.props}\n\n` +
+        `📊 مواد مغذی (در ۱۰۰ گرم):\n${nutrients}\n` +
+        `⚠️ محتوای آموزشی — جایگزین پزشک نیست.`;
+      await sendMessage(chatId, msg, MAIN_MENU);
+      return res.status(200).send("OK");
+    }
+
+    // ---- هر پیام دیگه‌ای = پشتیبانی ----
+    if (ADMIN_CHAT_ID) {
+      await sendMessage(ADMIN_CHAT_ID,
+        `📩 پیام از کاربر\n\n` +
+        `👤 نام: ${firstName} ${message.from?.last_name || ""}\n` +
+        `🆔 آیدی: ${chatId}\n` +
+        `🔗 یوزرنیم: @${message.from?.username || "ندارد"}\n\n` +
+        `💬 پیام:\n${text}`
+      );
+
+      await sendMessage(chatId,
+        `✅ پیامت برای ادمین ارسال شد.\n\n` +
+        `📌 در اولین فرصت پاسخ می‌ده.`,
+        MAIN_MENU
+      );
+    } else {
       await sendMessage(chatId,
         `❌ «${text}» پیدا نشد.\n\n💡 از «📂 دسته‌بندی‌ها» یا «🩺 جستجوی بیماری» استفاده کن.`,
         MAIN_MENU
       );
-      return res.status(200).send("OK");
     }
-
-    const key = result.key;
-    const herb = HERBS[key];
-    await sendMessage(chatId, `🔎 در حال جستجوی «${key}»...`);
-    const food = await searchUSDA(herb.en);
-    const nutrients = formatNutrients(food);
-    const msg =
-      `🌿 ${key} (${herb.en})\n` +
-      `📂 ${herb.cat} • ${CAT_EN[herb.cat] || herb.cat}\n\n` +
-      `🍃 خواص:\n${herb.props}\n\n` +
-      `📊 مواد مغذی (در ۱۰۰ گرم):\n${nutrients}\n` +
-      `⚠️ محتوای آموزشی — جایگزین پزشک نیست.`;
-    await sendMessage(chatId, msg, MAIN_MENU);
 
   } catch (e) {
     console.error("❌ Error:", e.message);
@@ -858,13 +842,8 @@ async function sendInvoice(chatId, title, description, payload, providerToken, c
     `https://botapi.bale.ai/bot${TOKEN}/sendInvoice`
   ];
   const body = {
-    chat_id: chatId,
-    title: title,
-    description: description,
-    payload: payload,
-    provider_token: providerToken,
-    currency: currency,
-    prices: prices
+    chat_id: chatId, title, description, payload,
+    provider_token: providerToken, currency, prices
   };
 
   for (const url of urls) {
@@ -899,7 +878,7 @@ async function answerPreCheckoutQuery(queryId, ok) {
         signal: AbortSignal.timeout(10000)
       });
       const d = await r.json();
-      console.log(`✅ PreCheckout answered:`, JSON.stringify(d));
+      console.log(`✅ PreCheckout:`, JSON.stringify(d));
       return;
     } catch (e) { console.error(`❌ PreCheckout error:`, e.message); }
   }
@@ -921,7 +900,7 @@ async function sendDocument(chatId, docUrl, caption) {
         signal: AbortSignal.timeout(30000)
       });
       const d = await r.json();
-      console.log(`📄 Document sent:`, JSON.stringify(d));
+      console.log(`📄 Document:`, JSON.stringify(d));
       if (d.ok) return true;
     } catch (e) { console.error(`❌ Doc error:`, e.message); }
   }
